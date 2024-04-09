@@ -8,4 +8,4 @@
 
 #import <Foundation/Foundation.h>
 
-#import <DarklyEventSource/LDEventSource.h>
+#import <LMEventsource/LDEventSource.h>
