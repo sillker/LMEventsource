@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-	s.name         = "DarklyEventSource"
+	s.name         = "LMEventsource"
 	s.version      = "1.0.0"
 	s.summary      = "HTML5 Server-Sent Events in your Cocoa app."
 	s.homepage     = "https://github.com/sillker/LMEventsource"
