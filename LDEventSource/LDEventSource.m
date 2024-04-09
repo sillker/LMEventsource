@@ -38,6 +38,8 @@ static NSInteger const HTTPStatusCodeUnauthorized = 401;
 @property (nonatomic, strong) id lastEventID;
 @property (nonatomic, strong) LDEventStringAccumulator *eventStringAccumulator;
 
+@property (nonatomic, copy) NSString *receiveTempString;
+
 - (void)open;
 - (void)_dispatchEvent:(LDEvent *)e;
 
@@ -87,8 +89,8 @@ static NSInteger const HTTPStatusCodeUnauthorized = 401;
     self.httpRequestHeaders = headers;
     self.connectMethod = connectMethod;
     self.connectBody = connectBody;
-    messageQueue = dispatch_queue_create("com.launchdarkly.eventsource-queue", DISPATCH_QUEUE_SERIAL);
-    connectionQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+    messageQueue = dispatch_queue_create("com.launchdarkly.eventMessenge-queue", DISPATCH_QUEUE_SERIAL);
+    connectionQueue = dispatch_queue_create("com.launchdarkly.eventConnection-queue", DISPATCH_QUEUE_SERIAL);
     self.eventStringAccumulator = [[LDEventStringAccumulator alloc] init];
 
     return self;
@@ -153,6 +155,41 @@ didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSe
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
     NSString *eventString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if (self.receiveTempString.length) {
+//        char *cStr = [self.receiveTempString cStringUsingEncoding:NSUTF8StringEncoding];
+//        printf("+++收到数据unMatchString: %s \n", cStr);
+        eventString = [self.receiveTempString stringByAppendingString:eventString];
+        self.receiveTempString = nil;
+    }
+//    char *cStr = [eventString cStringUsingEncoding:NSUTF8StringEncoding];
+//    printf("+++收到数据: %s \n", cStr);
+    if ([eventString containsString:@"event:"]) {
+        NSString *pattern = @"^(event:).*(\\n\\n)";
+        NSError *error = nil;
+
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                               options:NSRegularExpressionDotMatchesLineSeparators
+                                                                                 error:&error];
+
+        NSTextCheckingResult *match = [regex firstMatchInString:eventString
+                                                        options:0
+                                                          range:NSMakeRange(0, [eventString length])];
+
+        if (match) {
+            NSRange matchRange = [match range];
+            NSString *matchedString = [eventString substringWithRange:matchRange];
+            NSString *unMatchString = [eventString stringByReplacingOccurrencesOfString:matchedString withString:@""];
+            eventString = matchedString;
+            if (unMatchString.length) {
+                self.receiveTempString = unMatchString;
+            }
+        }
+        else {
+            self.receiveTempString = eventString;
+            return;
+        }
+
+    }
     @synchronized(self) {
         [self.eventStringAccumulator accumulateEventStringWithString:eventString];
         if ([self.eventStringAccumulator isReadyToParseEvent]) {

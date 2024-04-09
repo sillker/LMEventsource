@@ -33,7 +33,6 @@ double MILLISEC_PER_SEC = 1000.0;
 
     self.eventString = eventString;
     [self parseEventString];
-
     return self;
 }
 
@@ -44,7 +43,9 @@ double MILLISEC_PER_SEC = 1000.0;
 
     NSArray<NSString*> *linesToParse = [self linesToParseFromEventString];
     self.remainingEventString = [self remainingEventStringAfterParsingEventString];
-    if (linesToParse.count == 0) { return; }
+    if (linesToParse.count == 0) {
+        return;
+    }
 
     LDEvent *event = [LDEvent new];
     event.readyState = kEventStateOpen;
@@ -87,6 +88,7 @@ double MILLISEC_PER_SEC = 1000.0;
                     }
                 }
             }
+            
         }
     }
 }
@@ -105,7 +107,6 @@ double MILLISEC_PER_SEC = 1000.0;
         return nil;     //This should never happen because the guard for the terminator's presence passed...defensive
     }
     NSString *eventStringToParse = [eventStringParts.firstObject stringByAppendingString:LDEventSourceEventTerminator];
-
     return [eventStringToParse lines];
 }
 
