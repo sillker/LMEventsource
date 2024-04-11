@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
 	s.license      = { :type => 'MIT', :file => 'LICENSE' }
 	s.author       = { "sillker" => "269055130@qq.com" }
 	s.source       = { :git => 'https://github.com/sillker/LMEventsource.git', :tag => s.version }
-	s.source_files = 'LDEventSource/**/*.{h,m}'
+	s.source_files = 'LMEventsource/**/*.{h,m}'
 	s.platform     = :ios, "9.0"
 	s.requires_arc = true
 	s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
