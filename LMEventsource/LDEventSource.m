@@ -250,13 +250,13 @@ didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSe
         eventString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }
     if (self.receiveTempString.length && eventString) {
-//        char *cStr = [self.receiveTempString cStringUsingEncoding:NSUTF8StringEncoding];
+//        const char *cStr = [self.receiveTempString cStringUsingEncoding:NSUTF8StringEncoding];
 //        printf("+++收到数据unMatchString: %s \n", cStr);
         eventString = [self.receiveTempString stringByAppendingString:eventString];
         self.receiveTempString = nil;
     }
-    char *cStr = [eventString cStringUsingEncoding:NSUTF8StringEncoding];
-    printf("+++收到数据: %s \n", cStr);
+//    const char *cStr = [eventString cStringUsingEncoding:NSUTF8StringEncoding];
+//    printf("+++收到数据: %s \n", cStr);
     if ([eventString containsString:@"event:"]) {
         NSString *pattern = @"^(event:).*(\\n\\n)";
         NSError *error = nil;
