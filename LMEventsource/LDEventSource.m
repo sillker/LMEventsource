@@ -329,7 +329,7 @@ didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSe
     [self _dispatchEvent:e type:ReadyStateEvent];
     [self _dispatchEvent:e type:ErrorEvent];
     
-    if (![self responseIsUnauthorizedForTask:task]) {
+    if ([self responseIsUnauthorizedForTask:task]) {
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)([self increaseIntervalWithBackoff] * NSEC_PER_SEC));
         __weak typeof(self) weakSelf = self;
         dispatch_after(popTime, connectionQueue, ^(void){
