@@ -415,7 +415,7 @@ didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSe
 {
     [self _dispatchEvent:event type:MessageEvent];
     
-    if (event.event != nil) {
+    if (event.event.length && ![event.event isEqualToString:MessageEvent]) {
         [self _dispatchEvent:event type:event.event];
     }
 }
