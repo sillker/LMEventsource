@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 	s.name         = "LMEventsource"
-	s.version      = "1.1.1"
+	s.version      = "1.1.2"
 	s.summary      = "HTML5 Server-Sent Events in your Cocoa app."
 	s.homepage     = 'https://github.com/sillker/LMEventsource'
 	s.license      = { :type => 'MIT', :file => 'LICENSE' }
